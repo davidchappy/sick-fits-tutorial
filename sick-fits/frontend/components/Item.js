@@ -29,7 +29,7 @@ class Item extends Component {
             pathname: "update",
             query: { id: item.id }
           }}>
-            <a>Edit</a>
+            <a>Edit ✏️</a>
           </Link>
           <button>Add to Cart</button>
           <button>Delete</button>
@@ -40,10 +40,7 @@ class Item extends Component {
 }
 
 Item.propTypes = {
-  item: PropTypes.shape({
-    title: PropTypes.string.isRequired,
-    price: PropTypes.number.isRequired
-  }).isRequired
+  item: PropTypes.object.isRequired
 }
 
 export default Item;
