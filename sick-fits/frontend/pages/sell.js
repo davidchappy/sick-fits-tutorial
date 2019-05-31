@@ -1,8 +1,10 @@
+import CreateItem from "../components/CreateItem"
+
 const Sell = props => {
 
   return (
     <div>
-      Sell page
+      <CreateItem />
     </div>
   )
 }
