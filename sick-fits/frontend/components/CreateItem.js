@@ -71,7 +71,6 @@ class CreateItem extends Component {
       body: data
     })
     const file = await res.json()
-    console.log({ file })
 
     this.setState({
       image: file.secure_url,
@@ -80,8 +79,6 @@ class CreateItem extends Component {
   }
 
   render() {
-    console.log("image in state: ", this.state.image)
-
     return (
       <Mutation
         mutation={CREATE_ITEM_MUTATION}
