@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const jwtDecode = require('jwt-decode')
 
 const mutations = {
   // checked if logged in
@@ -86,6 +87,12 @@ const mutations = {
 
     // 5. Return user
     return user
+  },
+
+  async signout(parent, args, ctx, info) {
+    ctx.response.clearCookie('token')
+
+    return { message: "Successfully signed out" }
   }
 };
 
