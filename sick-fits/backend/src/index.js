@@ -8,7 +8,7 @@ const server = createServer()
 
 server.express.use(cookieParser())
 
-// TODO use express middleware to populate current user
+// Set user id token on every request (for logging in)
 server.express.use((req, res, next) => {
   const { token } = req.cookies
   if (token) {
