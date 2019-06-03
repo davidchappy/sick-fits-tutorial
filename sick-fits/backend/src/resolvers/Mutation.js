@@ -3,6 +3,8 @@ const jwt = require('jsonwebtoken')
 const { randomBytes } = require('crypto')
 const { promisify } = require('util')
 
+const { transport, makeANiceEmail } = require('../mail')
+
 const setTokenOnCookie = (response, token) => {
   response.cookie('token', token, {
     httpOnly: true,
@@ -105,13 +107,27 @@ const mutations = {
 
     // 2. Set reset token and expiry
     const resetToken = (await promisify(randomBytes)(20)).toString('hex')
-    console.log({ resetToken })
     const resetTokenExpiry = Date.now() + (1000 * 60 * 60) // 1 hour
     const res = await ctx.db.mutation.updateUser({
       where: { email },
       data: { resetToken, resetTokenExpiry }
     })
-    // Email the reset token
+
+    try {
+       // Email the reset token
+      const mailRes = await transport.sendMail({
+        from: "davidchappy@gmail.com",
+        to: user.email,
+        subject: 'Your password reset token',
+        html: makeANiceEmail(`Your Password reset token is here!
+        \n\n <a href="${process.env.FRONTEND_URL}/reset?resetToken=${resetToken}">Click here to reset</a>`)
+      })
+      console.log("Sending reset token email", mailRes)
+    } catch (error) {
+      return new Error("Oops!", error)
+    }
+
+    // Return success message
     return { message: "Thanks!" }
   },
 
