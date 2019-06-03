@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Mutation } from 'react-apollo'
 import gql from 'graphql-tag'
 
+import Error from './ErrorMessage'
 import { ALL_ITEMS_QUERY } from './Items'
 
 const DELETE_ITEM_MUTATION = gql`
@@ -33,18 +34,15 @@ export default class componentName extends Component {
         variables={{ id: this.props.id }}
         update={this.handleUpdate}
       >
-        {(deleteItem, { error }) => {
-          if (error) return <p>Error: {error}</p>
-          return (
-            <button
-              onClick={() => {
-                if(confirm('Are you sure you want to delete this item?')) {
-                  deleteItem()
-                }
-              }}
-            >{this.props.children}</button>
-          )
-        }}
+        {deleteItem => (
+          <button
+            onClick={() => {
+              if(confirm('Are you sure you want to delete this item?')) {
+                deleteItem().catch(err => alert(err.message))
+              }
+            }}
+          >{this.props.children}</button>
+        )}
       </Mutation>
 
     )
