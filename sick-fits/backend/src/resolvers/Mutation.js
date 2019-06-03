@@ -13,10 +13,20 @@ const setTokenOnCookie = (response, token) => {
 }
 
 const mutations = {
-  // checked if logged in
   async createItem(parent, args, ctx, info) {
+    // checked if logged in
+    if (!ctx.request.userID) {
+      throw new Error('You must be logged in to do that')
+    }
+
     const item = await ctx.db.mutation.createItem({
       data: {
+        // This is how we create relationships
+        user: {
+          connect: {
+            id: ctx.request.userID
+          }
+        },
         ...args
       }
     }, info)
