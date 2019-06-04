@@ -10,6 +10,7 @@ import SickButton from './styles/SickButton'
 import CartItem from './CartItem'
 import calcTotalPrice from '../lib/calcTotalPrice'
 import formatMoney from '../lib/formatMoney'
+import getCartCount from '../lib/getCartCount'
 
 const LOCAL_STATE_QUERY = gql`
   query LOCAL_STATE_QUERY {
@@ -26,6 +27,8 @@ const TOGGLE_CART_MUTATION = gql`
 const Cart = () =>  (
   <User>
   {({ data: { me }}) => {
+    const cartCount = getCartCount(me.cart)
+
     if (!me) return null
     return (
       <Mutation mutation={TOGGLE_CART_MUTATION}>
@@ -41,7 +44,7 @@ const Cart = () =>  (
                     &times;
                   </CloseButton>
                   <Supreme>{me.name}'s Cart</Supreme>
-                  <p>You have {me.cart.length || 0} item{me.cart.length === 1 ? '' : 's'} in your cart</p>
+                  <p>You have {cartCount} item{cartCount === 1 ? '' : 's'} in your cart</p>
                 </header>
                 <ul>
                   {me.cart.map(cartItem => (
