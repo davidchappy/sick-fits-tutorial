@@ -1,4 +1,4 @@
-import Downshift from 'downshift'
+import Downshift, { resetIdCounter } from 'downshift'
 import Router from 'next/router'
 import { ApolloConsumer } from 'react-apollo'
 import gql from 'graphql-tag'
@@ -19,6 +19,15 @@ const SEARCH_ITEMS_QUERY = gql`
     }
   }
 `
+
+const routeToItem = item => {
+  Router.push({
+    pathname: '/item',
+    query: {
+      id: item.id
+    }
+  })
+}
 
 class AutoComplete extends React.Component {
   state = {
@@ -42,35 +51,53 @@ class AutoComplete extends React.Component {
   }, 350)
 
   render() {
+    resetIdCounter()
     return (
       <SearchStyles>
-        <div>
-          <ApolloConsumer>
-            {client => {
-              return (
-                <input
-                  type="search"
-                  name="search"
-                  id="search"
-                  onChange={event => {
-                    // use events in React after render!!
-                    event.persist()
-                    this.handleSearchChange(event, client)
-                  }}
-                />
-              )
-            }}
-          </ApolloConsumer>
-          <DropDown>
-            {this.state.items.map(item => (
-              <DropDownItem key={item.id}>
-                <img width="50" src={item.image} alt={item.title}/>
-                {item.title}
-              </DropDownItem>
-            ))}
-            <p>Items go here</p>
-          </DropDown>
-        </div>
+        <Downshift
+          onChange={routeToItem}
+          itemToString={item => (item === null ? '' : item.title)}
+        >
+          {({ getInputProps, getItemProps, isOpen, inputValue, highlightedIndex }) => (
+            <div>
+              <ApolloConsumer>
+                {client => (
+                  <input
+                    {...getInputProps({
+                      name: "search",
+                      type: "search",
+                      id: "search",
+                      className: this.state.loading ? 'loading' : '',
+                      placeholder: "search for an item",
+                      onChange: event => {
+                        // use events in React after render!!
+                        event.persist()
+                        this.handleSearchChange(event, client)
+                      }
+                    })}
+                  />
+                )}
+              </ApolloConsumer>
+              {isOpen && (
+                <DropDown>
+                  {this.state.items.map((item, index) => (
+                    <DropDownItem
+                      {...getItemProps({ item })}
+                      key={item.id}
+                      highlighted={index === highlightedIndex}
+                    >
+                      <img width="50" src={item.image} alt={item.title}/>
+                      {item.title}
+                    </DropDownItem>
+                  ))}
+                  {!this.state.items.length &&
+                    !this.state.loading &&
+                    <DropDownItem>Nothing found for&nbsp;<em>"{inputValue}"</em></DropDownItem>}
+                </DropDown>
+              )}
+            </div>
+          )}
+        </Downshift>
       </SearchStyles>
     )
   }
