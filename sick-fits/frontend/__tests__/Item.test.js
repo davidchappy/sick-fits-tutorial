@@ -1,38 +1,45 @@
 import ItemComponent from '../components/Item'
 import { shallow } from 'enzyme'
+import toJSON from 'enzyme-to-json'
 
 const fakeItem = {
   id: 'ABC123',
   title: 'A cool item',
   description: 'This item',
-  price: 5000,
+  price: 4000,
   image: 'dog.jpg',
   largeImage: 'largedog.jpg'
 }
 
 describe('<Item />', () => {
-  const wrapper = shallow(<ItemComponent item={fakeItem}/>)
+  it('renders and matches the snapshot', () => {
+    const wrapper = shallow(<ItemComponent item={fakeItem} />)
 
-  it ('renders the image properly', () => {
-    const img = wrapper.find('img')
-    expect(img.props().src).toBe(fakeItem.image)
-    expect(img.props().alt).toBe(fakeItem.title)
+    expect(toJSON(wrapper)).toMatchSnapshot()
   })
 
-  it('renders the price tag and title', () => {
-    const PriceTag = wrapper.find('PriceTag')
-    expect(PriceTag.children().text()).toBe('$50')
+  // const wrapper = shallow(<ItemComponent item={fakeItem}/>)
 
-    expect(wrapper.find('Title a').text()).toBe(fakeItem.title)
-  })
+  // it ('renders the image properly', () => {
+  //   const img = wrapper.find('img')
+  //   expect(img.props().src).toBe(fakeItem.image)
+  //   expect(img.props().alt).toBe(fakeItem.title)
+  // })
 
-  it('renders out the buttons separately', () => {
-    const buttonList = wrapper.find('.buttonList')
-    console.log(buttonList.debug())
+  // it('renders the price tag and title', () => {
+  //   const PriceTag = wrapper.find('PriceTag')
+  //   expect(PriceTag.children().text()).toBe('$50')
 
-    expect(buttonList.children()).toHaveLength(3)
-    expect(buttonList.find('Link')).toHaveLength(1)
-    expect(buttonList.find('AddToCart').exists()).toBe(true)
-    // expect(buttonList.find('DeleteItem')).toHaveLength(1)
-  })
+  //   expect(wrapper.find('Title a').text()).toBe(fakeItem.title)
+  // })
+
+  // it('renders out the buttons separately', () => {
+  //   const buttonList = wrapper.find('.buttonList')
+  //   console.log(buttonList.debug())
+
+  //   expect(buttonList.children()).toHaveLength(3)
+  //   expect(buttonList.find('Link')).toHaveLength(1)
+  //   expect(buttonList.find('AddToCart').exists()).toBe(true)
+  //   // expect(buttonList.find('DeleteItem')).toHaveLength(1)
+  // })
 })
