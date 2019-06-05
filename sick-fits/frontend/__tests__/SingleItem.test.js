@@ -1,9 +1,8 @@
 import { mount } from 'enzyme'
 import toJSON from 'enzyme-to-json'
-import wait from 'waait'
 import SingleItem, { SINGLE_ITEM_QUERY } from '../components/SingleItem'
 import { MockedProvider } from 'react-apollo/test-utils'
-import { fakeItem } from '../lib/testUtils'
+import { fakeItem, skipApolloLoading } from '../lib/testUtils'
 
 describe('<SingleItem />', () => {
   it('renders with proper data', async () => {
@@ -22,8 +21,7 @@ describe('<SingleItem />', () => {
       </MockedProvider>
     )
     expect(wrapper.text()).toContain('Loading...')
-    await wait()
-    wrapper.update()
+    await skipApolloLoading(wrapper)
     // console.log(wrapper.debug())
     expect(toJSON(wrapper.find('h2'))).toMatchSnapshot()
     expect(toJSON(wrapper.find('img'))).toMatchSnapshot()
@@ -46,9 +44,7 @@ describe('<SingleItem />', () => {
         <SingleItem id='123' />
       </MockedProvider>
     )
-    await wait()
-    wrapper.update()
-    // console.log(wrapper.debug())
+    await skipApolloLoading(wrapper)
 
     const item = wrapper.find('[data-test="graphql-error"]')
 

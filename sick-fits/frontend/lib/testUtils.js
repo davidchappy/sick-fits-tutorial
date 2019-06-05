@@ -1,7 +1,14 @@
 import casual from 'casual';
+import wait from 'waait'
 
 // seed it so we get consistent results
 casual.seed(777);
+
+const skipApolloLoading = async wrapper => {
+  await wait()
+  wrapper.update()
+  return Promise.resolve()
+}
 
 const fakeItem = () => ({
   __typename: 'Item',
@@ -83,4 +90,5 @@ export {
   fakeCartItem,
   fakeOrder,
   fakeOrderItem,
+  skipApolloLoading
 };
