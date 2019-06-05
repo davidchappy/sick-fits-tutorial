@@ -29,11 +29,11 @@ const CREATE_ITEM_MUTATION = gql`
 
 class CreateItem extends Component {
   state = {
-    title: 'Cool shoes',
-    description: 'I love those shoes',
+    title: '',
+    description: '',
     image: '',
-    largeImage: 'largedog.jpg',
-    price: 1000,
+    largeImage: '',
+    price: 0,
   }
 
   handleChange = event => {
@@ -85,7 +85,7 @@ class CreateItem extends Component {
         variables={this.state}
       >
         {(createItem, { loading, error }) => (
-          <Form onSubmit={this.handleSubmit(createItem)}>
+          <Form data-test="form" onSubmit={this.handleSubmit(createItem)}>
             <Error error={error}/>
             <fieldset disabled={loading} aria-busy={loading} >
               <label htmlFor="file">
