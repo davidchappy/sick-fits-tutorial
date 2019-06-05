@@ -27,6 +27,14 @@ const setTokenOnCookie = (response, token) => {
   })
 }
 
+const calcTotalPrice = cart => {
+  return cart.reduce((tally, cartItem) => {
+    if (!cartItem.item) return tally;
+    return tally + cartItem.quantity * cartItem.item.price;
+  }, 0);
+}
+
 exports.setTokenOnCookie = setTokenOnCookie
 exports.checkLoggedIn = checkLoggedIn
-exports.hasPermission = hasPermission;
+exports.hasPermission = hasPermission
+exports.calcTotalPrice = calcTotalPrice

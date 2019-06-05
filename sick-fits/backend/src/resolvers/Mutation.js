@@ -2,8 +2,14 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { randomBytes } = require('crypto')
 const { promisify } = require('util')
+const stripe = require('../stripe')
 
-const { checkLoggedIn, setTokenOnCookie, hasPermission } = require('../utils')
+const {
+  checkLoggedIn,
+  setTokenOnCookie,
+  hasPermission,
+  calcTotalPrice
+} = require('../utils')
 const { transport, makeANiceEmail } = require('../mail')
 
 const mutations = {
@@ -258,6 +264,49 @@ const mutations = {
     return ctx.db.mutation.deleteCartItem({
       where: { id: args.id }
     }, info)
+  },
+
+  async createOrder(parent, args, ctx, info) {
+    // 1. Query current user
+    checkLoggedIn(ctx.request)
+    const user = await ctx.db.query.user({
+      where: { id: ctx.request.userID }
+    }, `{
+      id
+      name
+      email
+      cart {
+        id
+        quantity
+        item {
+          title
+          price
+          id
+          description
+          image
+        }
+      }
+    }`)
+
+    // 2. Recalc total price
+    const amount = calcTotalPrice(user.cart)
+    console.log(`Going to charge ${amount}`)
+
+    // 3. Create Stripe charge (turn token into money)
+    const charge = await stripe.charges.create({
+      amount,
+      currency:'USD',
+      source: args.token
+    })
+
+    // 4. Convert CartItems to OrderItems
+
+    // 5. Create Order
+
+    // 6. Clean up - clear user's cart, delete CartItems
+
+    // 7. Return Order to client
+
   }
 };
 
