@@ -41,6 +41,16 @@ const Query = {
 
     // 4. Return order
     return order
+  },
+
+  async orders(parent, args, ctx, info) {
+    // 1. Logged in
+    checkLoggedIn(ctx.request)
+
+    // 2. Return orders
+    return ctx.db.query.orders({
+      where: { user: { id: ctx.request.userID }}
+    }, info)
   }
 };
 

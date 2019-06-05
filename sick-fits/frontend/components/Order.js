@@ -6,6 +6,7 @@ import gql from 'graphql-tag'
 import formatMoney from '../lib/formatMoney'
 import Error from './ErrorMessage'
 import OrderStyles from './styles/OrderStyles'
+import { createdAtStandard } from '../lib/dateFormats'
 
 const SINGLE_ORDER_QUERY = gql`
   query SINGLE_ORDER_QUERY($id: ID!) {
@@ -60,7 +61,7 @@ class Order extends React.Component {
               </p>
               <p>
                 <span>Date</span>
-                <span>{format(order.createdAt, 'MMMM d, YYYY h:mm a')}</span>
+                <span>{format(order.createdAt, createdAtStandard)}</span>
               </p>
               <p>
                 <span>Order Total</span>
