@@ -26,9 +26,8 @@ const CREATE_ORDER_MUTATION = gql`
 `
 
 class TakeMyMoney extends React.Component {
-  onToken = createOrder => res => {
-    console.log('On token called')
-    createOrder({
+  onToken = createOrder => async res => {
+    const order = await createOrder({
       variables: {
         token: res.id
       }
