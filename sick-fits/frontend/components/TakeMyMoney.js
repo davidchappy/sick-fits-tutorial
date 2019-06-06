@@ -4,7 +4,7 @@ import Router from 'next/router'
 import NProgress from 'nprogress'
 import PropTypes from 'prop-types'
 import gql from 'graphql-tag'
-import getConfig from 'next/config'
+// import getConfig from 'next/config'
 
 import calcTotalPrice from '../lib/calcTotalPrice'
 import getCartCount from '../lib/getCartCount'
@@ -53,7 +53,8 @@ class TakeMyMoney extends React.Component {
                 name="Sick Fits"
                 description={`Order of ${getCartCount(me.cart)} items`}
                 image={me.cart.length && me.cart[0].item && me.cart[0].item.image}
-                stripeKey={getConfig().publicRuntimeConfig.publicStripeKey}
+                // stripeKey={getConfig().publicRuntimeConfig.publicStripeKey}
+                stripeKey="pk_test_BbJsCwX6oqwH707vfbmceC7700acKIWXwH"
                 currency="USD"
                 email={me.email}
                 token={this.onToken(createOrder)}
