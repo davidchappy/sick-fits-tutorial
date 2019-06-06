@@ -42,31 +42,34 @@ class TakeMyMoney extends React.Component {
   render() {
     return (
       <User>
-        {({ data: { me }, loading, error }) => (
-          <Mutation
-            mutation={CREATE_ORDER_MUTATION}
-            refetchQueries={[{ query: CURRENT_USER_QUERY }]}
-          >
-            {(createOrder) => (
-              <StripeCheckout
-                amount={calcTotalPrice(me.cart)}
-                name="Sick Fits"
-                description={`Order of ${getCartCount(me.cart)} items`}
-                image={me.cart.length && me.cart[0].item && me.cart[0].item.image}
-                // stripeKey={getConfig().publicRuntimeConfig.publicStripeKey}
-                stripeKey="pk_test_BbJsCwX6oqwH707vfbmceC7700acKIWXwH"
-                currency="USD"
-                email={me.email}
-                token={this.onToken(createOrder)}
-              >{this.props.children}</StripeCheckout>
-            )}
-          </Mutation>
-        )}
+        {({ data: { me }, loading, error }) => {
+          if (loading) return null
+
+          return (
+            <Mutation
+              mutation={CREATE_ORDER_MUTATION}
+              refetchQueries={[{ query: CURRENT_USER_QUERY }]}
+            >
+              {(createOrder) => (
+                <StripeCheckout
+                  amount={calcTotalPrice(me.cart)}
+                  name="Sick Fits"
+                  description={`Order of ${getCartCount(me.cart)} items`}
+                  image={me.cart.length && me.cart[0].item && me.cart[0].item.image}
+                  // stripeKey={getConfig().publicRuntimeConfig.publicStripeKey}
+                  stripeKey="pk_test_BbJsCwX6oqwH707vfbmceC7700acKIWXwH"
+                  currency="USD"
+                  email={me.email}
+                  token={this.onToken(createOrder)}
+                >{this.props.children}</StripeCheckout>
+              )}
+            </Mutation>
+          )
+        }}
       </User>
     );
   }
 }
 
 export default TakeMyMoney;
-
-
+export { CREATE_ORDER_MUTATION }
